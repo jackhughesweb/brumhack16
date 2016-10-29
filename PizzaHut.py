@@ -3,13 +3,15 @@ import re
 import math
 import requests
 import datetime
+import urllib.parse
 
 class PizzaHut:
     safe_postcode = ""
     headers = ""
     jar = None
 
-    def __init__(self, safe_postcode, headers):
+    def __init__(self, postcode, headers):
+        safe_postcode = urllib.parse.quote_plus(postcode)
         self.safe_postcode = safe_postcode
         self.headers = headers
         base_url = 'https://www.pizzahut.co.uk'
