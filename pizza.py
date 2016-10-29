@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from PizzaHut import PizzaHut
+from Dominos import Dominos
 
 postcode = 'B15 2TT'
 
@@ -8,4 +9,6 @@ headers = {'User-Agent': user_agent}
 
 ph = PizzaHut(postcode, headers)
 phz = ph.get_pizzas()
-PizzaHut.print_pizzas(phz)
+
+dm = Dominos(postcode, headers)
+dmz = dm.get_pizzas()

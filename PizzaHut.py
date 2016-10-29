@@ -34,7 +34,7 @@ class PizzaHut:
         self.jar = jar
 
 
-    def parse_pizza_hut_base_size(self, base):
+    def parse_base_size(self, base):
         p = '([A-z]*)_([0-9]*)_([0-9]*)_([0-9]*)_([0-9]*.[0-9]*)_([0-9]*)'
         m = re.search(p, base)
         size_measure = 9.5
@@ -47,29 +47,29 @@ class PizzaHut:
         return {'size': m.group(1), 'size_measure': size_measure, 'sku': m.group(2), 'product_id': m.group(3), 'half_half_product_id': m.group(4), 'price': m.group(5), 'cost_per_area': cost_per_area, 'favourite': m.group(6)}
 
 
-    def parse_pizza_hut_bases(self, base_html):
+    def parse_bases(self, base_html):
         bases = []
         for base in base_html.find(attrs={'class': 'pizzabase'}).find_all('option'):
             title = base.get_text()
             sizes = []
             for size in base:
                 if 'data-large' in base.attrs:
-                    sizes.append(self.parse_pizza_hut_base_size(base['data-large']))
+                    sizes.append(self.parse_base_size(base['data-large']))
                 if 'data-medium' in base.attrs:
-                    sizes.append(self.parse_pizza_hut_base_size(base['data-medium']))
+                    sizes.append(self.parse_base_size(base['data-medium']))
                 if 'data-small' in base.attrs:
-                    sizes.append(self.parse_pizza_hut_base_size(base['data-small']))
+                    sizes.append(self.parse_base_size(base['data-small']))
             bases.append({'name': title, 'sizes': sizes})
         return bases
 
 
-    def parse_pizza_hut_pizzas(self, pizza_html):
+    def parse_pizzas(self, pizza_html):
         pizzas_raw = pizza_html.find(id='pizza-product-list')
         pizzas = []
         for pizza in pizzas_raw.find_all(attrs={'class': 'pizza-product'}):
             title = pizza.find(attrs={'class': 'product-title'}).get_text()
             description = map(lambda x: x.strip(), pizza.find(attrs={'class': 'product-description'}).get_text().split(','))
-            bases = self.parse_pizza_hut_bases(pizza)
+            bases = self.parse_bases(pizza)
             pizzas.append({'name': title, 'description': description, 'bases': bases})
         return pizzas
 
@@ -90,4 +90,4 @@ class PizzaHut:
     def get_pizzas(self):
         res = requests.get('https://www.pizzahut.co.uk/menu/pizza', cookies=self.jar, headers=self.headers)
         soup = BeautifulSoup(res.text, 'html.parser')
-        return self.parse_pizza_hut_pizzas(soup)
+        return self.parse_pizzas(soup)
