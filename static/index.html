@@ -4,12 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet">
     <style media="screen">
         * {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
         }
+
+        h1, h1 input, .mono, .mono * {
+            font-family: 'Source Code Pro', monospace !important;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
         table {
             border-collapse: collapse;
+            width: 100%;
+        }
+        table td:nth-child(1), table td:nth-child(3), table td:nth-child(4), table td:nth-child(5) {
+            width: 10%;
+        }
+        table td:nth-child(6) {
+            width: 60px;
         }
         table td {
             border: 1px solid black;
@@ -190,21 +205,25 @@
                             transform: rotate(360deg); }
 
         }
+
+        #postcode-input {
+            font-size: 1em;
+            border: none;
+        }
     </style>
-    <title>Pizza 🍕</title>
+    <title>$ git pizza 🍕</title>
 </head>
 <body>
-    <h1>Pizza 🍕</h1>
-    <p><span>Get pizza at </span><input type="text" placeholder="your postcode" id="postcode-input"></input> <button id="postcode-go">Go</button></p>
+    <h1>$ git pizza --postcode <input type="text" placeholder="ab1 2cd" id="postcode-input"></input><button id="postcode-go" style="display: none;">Go</button></h1>
     <div class="loading">
         <div class="pizza-spinning">
           <div class="pizza-spin">🍕</div>
         </div>
     </div>
     <div class="loaded">
-        <p><span>Filter by ingredient </span><input type="text" id="ingredient-input"></input></p>
-        <p>
-            <span>Sort by </span><select class="" name="size">
+        <p class="mono"><span>--filter-by-ingredient </span><input type="text" id="ingredient-input"></input></p>
+        <p class="mono">
+            <span>--sort-by </span><select class="" name="size">
                 <option value="small">small cost</option>
                 <option value="medium">medium cost</option>
                 <option value="large">large cost</option>
