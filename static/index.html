@@ -429,6 +429,8 @@
                 showPizzas(currentPizzas);
             });
 
+            $('#postcode-input').focus();
+
             $('#postcode-input').on('keydown', function(e) {
                 if (e.which == 13) {
                     e.preventDefault();
