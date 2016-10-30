@@ -16,6 +16,10 @@
             font-weight: bold;
         }
 
+        input[type=text] {
+            outline: none;
+        }
+
         table {
             border-collapse: collapse;
             width: 100%;
@@ -25,6 +29,10 @@
         }
         table td:nth-child(6) {
             width: 60px;
+        }
+
+        table tr:hover {
+            background-color: yellow;
         }
         table td {
             border: 1px solid black;
@@ -206,7 +214,7 @@
 
         }
 
-        #postcode-input {
+        #postcode-input, #ingredient-input {
             font-size: 1em;
             border: none;
         }
@@ -221,7 +229,7 @@
         </div>
     </div>
     <div class="loaded">
-        <p class="mono"><span>--filter-by-ingredient </span><input type="text" id="ingredient-input"></input></p>
+        <p class="mono"><span>--filter-by-ingredient </span><input type="text" id="ingredient-input" placeholder="cheese"></input></p>
         <p class="mono">
             <span>--sort-by </span><select class="" name="size">
                 <option value="small">small cost</option>
@@ -235,6 +243,12 @@
     </div>
     <script src="jquery-3.1.1.min.js"></script>
     <script>
+
+    var pizza_url = "/lookup";
+
+    function backup() {
+        pizza_url = "/res.json";
+    }
         $(document).ready(function () {
             var allPizzas = [];
             var currentPizzas = [];
@@ -415,8 +429,9 @@
                 e.preventDefault();
                 $('.loading').show();
                 $('.loaded').hide();
+                $('input').blur();
                 $.ajax({
-                  url: "/lookup",
+                  url: pizza_url,
                   type: "get",
                   data: {
                       'postcode': $('#postcode-input').val()
