@@ -6,30 +6,32 @@ import datetime
 import urllib.parse
 
 class PizzaHut:
+    session = None
     safe_postcode = ""
     headers = ""
     jar = None
 
     def __init__(self, postcode, headers):
+        self.session = requests.session()
         safe_postcode = urllib.parse.quote_plus(postcode)
         self.safe_postcode = safe_postcode
         self.headers = headers
         base_url = 'https://www.pizzahut.co.uk'
         # Make request to homepage, obtain cookie
-        res = requests.get(base_url)
+        res = self.session.get(base_url)
         jar = res.cookies
         # Send postcode
-        res = requests.get(base_url + '/delivery/ordernowvalidated?postcode=' + safe_postcode, cookies=jar, headers=headers)
+        res = self.session.get(base_url + '/delivery/ordernowvalidated?postcode=' + safe_postcode, cookies=jar, headers=headers)
         # Get stores
         current_time = datetime.datetime.now(datetime.timezone.utc)
         unix_timestamp = str(round(current_time.timestamp()))
         time = current_time.strftime('%Y-%m-%d')
-        res = requests.get(base_url + '/store/storesearchjson?clientOrderType=2&orderTime=' + time + '%2015%3A11&postcode=' + safe_postcode + '&longitude=0&latitude=0&isAsap=true&selectedStoreId=&_=' + unix_timestamp, cookies=jar, headers=headers).json()
+        res = self.session.get(base_url + '/store/storesearchjson?clientOrderType=2&orderTime=' + time + '%2015%3A11&postcode=' + safe_postcode + '&longitude=0&latitude=0&isAsap=true&selectedStoreId=&_=' + unix_timestamp, cookies=jar, headers=headers).json()
         store = res[0]
         print('Ordering from: ' + store['StoreName'])
         store_id = store['StoreId']
-        res = requests.get(base_url + '/store/storeopencheck?storeId=' + str(store_id) + '&orderDateTime=' + time + '%2015%3A11&isAsap=true&isDelivery=true&_=' + unix_timestamp, cookies=jar, headers=headers)
-        res = requests.get(base_url + '/store/getmenuandstartorderjson?storeId=' + str(store_id) + '&orderClassId=2&fulfillmentTimeTypeId=1&orderTime=' + time + '%2015%3A37&currentMenuId=0&postCode=' + safe_postcode + '&addressId=&platformType=&changePreviousSelection=&isAsap=true&voucherCode=&_=' + unix_timestamp, cookies=jar, headers=headers)
+        res = self.session.get(base_url + '/store/storeopencheck?storeId=' + str(store_id) + '&orderDateTime=' + time + '%2015%3A11&isAsap=true&isDelivery=true&_=' + unix_timestamp, cookies=jar, headers=headers)
+        res = self.session.get(base_url + '/store/getmenuandstartorderjson?storeId=' + str(store_id) + '&orderClassId=2&fulfillmentTimeTypeId=1&orderTime=' + time + '%2015%3A37&currentMenuId=0&postCode=' + safe_postcode + '&addressId=&platformType=&changePreviousSelection=&isAsap=true&voucherCode=&_=' + unix_timestamp, cookies=jar, headers=headers)
         res = requests.get(base_url + '/menu/startyourorder?redirectTo=Pizza', cookies=jar, headers=headers)
         self.jar = jar
 
@@ -68,7 +70,9 @@ class PizzaHut:
         pizzas = []
         for pizza in pizzas_raw.find_all(attrs={'class': 'pizza-product'}):
             title = pizza.find(attrs={'class': 'product-title'}).get_text()
-            description = map(lambda x: x.strip(), pizza.find(attrs={'class': 'product-description'}).get_text().split(','))
+            description = []
+            for d in pizza.find(attrs={'class': 'product-description'}).get_text().split(','):
+                description.append(d.strip())
             bases = self.parse_bases(pizza)
             pizzas.append({'name': title, 'description': description, 'bases': bases})
         return pizzas
@@ -88,6 +92,6 @@ class PizzaHut:
 
 
     def get_pizzas(self):
-        res = requests.get('https://www.pizzahut.co.uk/menu/pizza', cookies=self.jar, headers=self.headers)
+        res = self.session.get('https://www.pizzahut.co.uk/menu/pizza', cookies=self.jar, headers=self.headers)
         soup = BeautifulSoup(res.text, 'html.parser')
         return self.parse_pizzas(soup)
