@@ -10,7 +10,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
         }
 
-        h1, h1 input, .mono, .mono * {
+        h1, h1 input, .mono, .mono *, .m1, .m2, .m3, .m4, .m5 {
             font-family: 'Source Code Pro', monospace !important;
             font-size: 1.2rem;
             font-weight: bold;
@@ -218,12 +218,24 @@
             font-size: 1em;
             border: none;
         }
+
+        .m1, .m2, .m3, .m4, .m5 {
+            display: none;
+        }
     </style>
     <title>$ git pizza 🍕</title>
 </head>
 <body>
     <h1>$ git pizza --postcode <input type="text" placeholder="ab1 2cd" id="postcode-input"></input><button id="postcode-go" style="display: none;">Go</button></h1>
     <div class="loading">
+
+        <p class="mono">
+            <p class="m1">remote: Counting pizzas (51/51)</p>
+            <p class="m2">Unpacking boxes: 100% (51/51), done.</p>
+            <p class="m3">From ssh://pizzas/~/git/moar/pizzas</p>
+            <p class="m4">* branch            oven     -> COOK_PIZZA</p>
+            <p class="m5">Updating p1zz45..43v3r</p>
+        </p>
         <div class="pizza-spinning">
           <div class="pizza-spin">🍕</div>
         </div>
@@ -304,7 +316,7 @@
                         }
                         var place = "P";
                         if (i == 1) {
-                            place = "D"; 
+                            place = "D";
                         }
                         if (name != "Virtual Product") {
                             pizzas.push([name, ingredients, smallCost, mediumCost, largeCost, place]);
@@ -430,6 +442,17 @@
                 $('.loading').show();
                 $('.loaded').hide();
                 $('input').blur();
+
+                $('.m1').hide();
+                $('.m2').hide();
+                $('.m3').hide();
+                $('.m4').hide();
+                $('.m5').hide();
+                $('.m1').delay(5).fadeIn(1);
+                $('.m2').delay(500).fadeIn(1);
+                $('.m3').delay(1000).fadeIn(1);
+                $('.m4').delay(1500).fadeIn(1);
+                $('.m5').delay(2000).fadeIn(1);
                 $.ajax({
                   url: pizza_url,
                   type: "get",
