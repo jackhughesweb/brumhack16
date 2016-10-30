@@ -250,6 +250,7 @@
             </select>
         </p>
         <p><button id="random">I'm not paying 💰💰💰</button></p>
+        <p><button id="show-table">Show pizzas 🍕</button></p>
         <table class="pizza-list">
         </table>
     </div>
@@ -267,6 +268,7 @@
 
             $('#random').click(function(e) {
                 e.preventDefault();
+                $('#show-table').click();
                 showPizzas(currentPizzas);
                 var rand = Math.floor(Math.random() * (currentPizzas.length));
                 var c = $('table').children();
@@ -438,13 +440,20 @@
                 }
             });
 
+            $('#show-table').click(function (e) {
+                e.preventDefault();
+                $('table').show();
+                $(this).hide();
+            })
+
 
             $('#postcode-go').click(function (e) {
                 e.preventDefault();
                 $('.loading').show();
                 $('.loaded').hide();
                 $('input').blur();
-
+                $('#show-table').show();
+                $('table').hide();
                 $('.m1').hide();
                 $('.m2').hide();
                 $('.m3').hide();
